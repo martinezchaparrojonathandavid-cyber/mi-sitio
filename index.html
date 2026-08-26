@@ -53,7 +53,6 @@ a { color: var(--navy); }
   position: relative;
 }
 
-/* espiral de cuaderno en el margen izquierdo */
 .spiral {
   position: absolute;
   left: 18px;
@@ -72,7 +71,6 @@ a { color: var(--navy); }
   background: var(--bg);
 }
 
-/* ---------- Portada ---------- */
 header.cover {
   padding: 70px 0 40px;
   border-bottom: 3px solid var(--navy);
@@ -113,7 +111,6 @@ header.cover img {
   height: auto;
 }
 
-/* ---------- Secciones generales ---------- */
 section { padding: 56px 0; }
 section + section { border-top: 1px dashed var(--line); }
 
@@ -227,7 +224,6 @@ p:last-child { margin-bottom: 0; }
   header.cover img { max-width: 220px; margin: 0 auto; }
 }
 
-/* ---------- Tabla comparativa ---------- */
 .table-wrap {
   overflow-x: auto;
   border: 2px solid var(--navy);
@@ -265,7 +261,6 @@ td.label {
   white-space: nowrap;
 }
 
-/* ---------- Nota / conclusión ---------- */
 .note {
   background: #fffbe9;
   border-left: 4px solid var(--fat32);
@@ -274,7 +269,6 @@ td.label {
   font-size: 14.5px;
 }
 
-/* ---------- Referencias ---------- */
 .refs {
   font-size: 13.5px;
   color: var(--ink-soft);
@@ -282,7 +276,6 @@ td.label {
 }
 .refs li { margin-bottom: 6px; }
 
-/* ---------- Footer ---------- */
 footer {
   text-align: center;
   padding: 30px 0 10px;
@@ -292,7 +285,6 @@ footer {
 }
 
 
-/* soporte para SVGs incrustados directamente (sin archivos externos) */
 .svg-embed,
 .svg-embed svg {
   display: block;
@@ -318,12 +310,11 @@ header.cover .svg-embed svg { width: 100%; }
 
   <header class="cover">
     <div>
-      <p class="eyebrow">Introducción a Sistemas Operativos · Primer semestre</p>
       <h1 class="title">Sistemas de archivos:<br><mark>NTFS</mark>, FAT32 y EXT4</h1>
       <p class="cover-meta">
-        <strong>Estudiante:</strong> [Tu nombre aquí]<br>
-        <strong>Programa:</strong> Ingeniería de Sistemas<br>
-        <strong>Fecha:</strong> Agosto de 2026
+        <strong>Estudiante:</strong> Jonathan Martinez<br>
+        <strong>Programa:</strong> Produccion Multimedia<br>
+        <strong>Fecha:</strong> 26 de 2026
       </p>
     </div>
     <span class="svg-embed" role="img" aria-label="Disco duro dividido en tres particiones de colores"><svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Disco duro dividido en particiones">
@@ -336,12 +327,10 @@ header.cover .svg-embed svg { width: 100%; }
 
   <circle cx="240" cy="240" r="200" fill="url(#platterShine)" stroke="#0f2038" stroke-width="4"/>
 
-  <!-- anillos de pistas -->
   <circle cx="240" cy="240" r="165" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
   <circle cx="240" cy="240" r="130" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
   <circle cx="240" cy="240" r="95" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
 
-  <!-- 3 particiones de colores -->
   <path d="M240 240 L240 40 A200 200 0 0 1 413.2 340 Z" fill="#2d8fd1" opacity="0.85"/>
   <path d="M240 240 L413.2 340 A200 200 0 0 1 66.8 340 Z" fill="#e2a73e" opacity="0.85"/>
   <path d="M240 240 L66.8 340 A200 200 0 0 1 240 40 Z" fill="#3fa66b" opacity="0.85"/>
@@ -349,7 +338,6 @@ header.cover .svg-embed svg { width: 100%; }
   <circle cx="240" cy="240" r="34" fill="#eef2f6" stroke="#0f2038" stroke-width="4"/>
   <circle cx="240" cy="240" r="8" fill="#0f2038"/>
 
-  <!-- brazo lector -->
   <rect x="236" y="20" width="8" height="90" rx="4" fill="#0f2038"/>
   <circle cx="240" cy="20" r="10" fill="#0f2038"/>
 
@@ -357,7 +345,6 @@ header.cover .svg-embed svg { width: 100%; }
 </svg></span>
   </header>
 
-  <!-- ================= INTRODUCCIÓN ================= -->
   <section id="intro">
     <p class="section-sub">01 · Para entrar en tema</p>
     <h2 class="section-title">¿Qué es un sistema de archivos?</h2>
@@ -375,7 +362,6 @@ header.cover .svg-embed svg { width: 100%; }
     </p>
   </section>
 
-  <!-- ================= NTFS ================= -->
   <section id="ntfs">
     <p class="section-sub">02 · Ficha técnica</p>
     <h2 class="section-title">Los tres sistemas de archivos</h2>
@@ -409,7 +395,6 @@ header.cover .svg-embed svg { width: 100%; }
 
   <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#12496f" font-weight="700">$MFT — Master File Table</text>
 
-  <!-- registros de la MFT -->
   <g font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#12496f">
     <rect x="20" y="45" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
     <text x="30" y="62">registro 0 · $MFT</text>
@@ -424,7 +409,6 @@ header.cover .svg-embed svg { width: 100%; }
     <text x="30" y="152">registro 3 · tarea.pdf</text>
   </g>
 
-  <!-- journal -->
   <rect x="20" y="175" width="380" height="34" fill="#fff3e0" stroke="#e2a73e" stroke-width="1.5" rx="4"/>
   <text x="30" y="196" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#8a5b12">$LogFile · registro de transacciones (journaling)</text>
 
@@ -451,7 +435,6 @@ header.cover .svg-embed svg { width: 100%; }
       </div>
     </article>
 
-    <!-- ================= FAT32 ================= -->
     <article class="fs-card fat32">
       <span class="fs-tab">FAT32</span>
       <div class="fs-body">
@@ -480,7 +463,6 @@ header.cover .svg-embed svg { width: 100%; }
   <rect x="0" y="0" width="420" height="260" fill="#fdf3e2" rx="10"/>
   <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#8a5b12" font-weight="700">Tabla FAT — lista enlazada de clusters</text>
 
-  <!-- fila de la tabla FAT -->
   <g font-family="'JetBrains Mono', monospace" font-size="10">
     <rect x="20" y="45" width="60" height="24" fill="#ffffff" stroke="#e2a73e" stroke-width="1.5"/>
     <text x="30" y="61" fill="#8a5b12">[5] → 6</text>
@@ -490,7 +472,6 @@ header.cover .svg-embed svg { width: 100%; }
     <text x="150" y="61" fill="#8a5b12">[9] → EOF</text>
   </g>
 
-  <!-- clusters en el disco -->
   <text x="20" y="100" font-family="Inter, sans-serif" font-size="11" fill="#5c3f0a">Clusters en el disco (video.mp4 ocupa 5 → 6 → 9):</text>
 
   <g>
@@ -549,7 +530,6 @@ header.cover .svg-embed svg { width: 100%; }
       </div>
     </article>
 
-    <!-- ================= EXT4 ================= -->
     <article class="fs-card ext4">
       <span class="fs-tab">EXT4</span>
       <div class="fs-body">
@@ -578,23 +558,19 @@ header.cover .svg-embed svg { width: 100%; }
   <rect x="0" y="0" width="420" height="260" fill="#e8f6ee" rx="10"/>
   <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1f6b40" font-weight="700">inodo → extents → bloques de datos</text>
 
-  <!-- inodo -->
   <rect x="20" y="50" width="90" height="60" fill="#3fa66b" rx="6"/>
   <text x="65" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#ffffff">inodo</text>
   <text x="65" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">permisos</text>
   <text x="65" y="102" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">dueño · fecha</text>
 
-  <!-- flecha a extent -->
   <path d="M112 80 L150 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
 
-  <!-- extent -->
   <rect x="152" y="55" width="110" height="50" fill="#ffffff" stroke="#3fa66b" stroke-width="1.5" rx="4"/>
   <text x="207" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="#1f6b40">extent</text>
   <text x="207" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#1f6b40">bloques 120–450</text>
 
   <path d="M264 80 L302 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
 
-  <!-- bloques de datos contiguos -->
   <g>
     <rect x="304" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
     <rect x="330" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
@@ -639,7 +615,6 @@ header.cover .svg-embed svg { width: 100%; }
     </article>
   </section>
 
-  <!-- ================= COMPARATIVA ================= -->
   <section id="comparativa">
     <p class="section-sub">03 · En resumen</p>
     <h2 class="section-title">Tabla comparativa</h2>
@@ -695,7 +670,6 @@ header.cover .svg-embed svg { width: 100%; }
     </div>
   </section>
 
-  <!-- ================= CONCLUSIÓN ================= -->
   <section id="conclusion">
     <p class="section-sub">04 · Para cerrar</p>
     <h2 class="section-title">Conclusión</h2>
@@ -712,20 +686,15 @@ header.cover .svg-embed svg { width: 100%; }
     </div>
   </section>
 
-  <!-- ================= REFERENCIAS ================= -->
   <section id="referencias">
     <p class="section-sub">05 · Fuentes de consulta</p>
     <h2 class="section-title">Referencias</h2>
     <ul class="refs">
       <li>Documentación oficial de Microsoft sobre NTFS y FAT32 (learn.microsoft.com)</li>
       <li>Documentación del kernel de Linux sobre EXT4 (kernel.org)</li>
-      <li>Apuntes de clase — Introducción a Sistemas Operativos</li>
+      <li>Informacion encontrada en wikipedia</li>
     </ul>
   </section>
-
-  <footer>
-    Trabajo elaborado para la asignatura de Introducción a Sistemas Operativos · Primer semestre
-  </footer>
 
 </div>
 </body>
