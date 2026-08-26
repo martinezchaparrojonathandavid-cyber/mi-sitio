@@ -46,7 +46,6 @@ a { color: var(--navy); }
   position: relative;
 }
 
-/* espiral de cuaderno en el margen izquierdo */
 .spiral {
   position: absolute;
   left: 18px;
@@ -65,7 +64,6 @@ a { color: var(--navy); }
   background: var(--bg);
 }
 
-/* ---------- Portada ---------- */
 header.cover {
   padding: 70px 0 40px;
   border-bottom: 3px solid var(--navy);
@@ -106,7 +104,6 @@ header.cover img {
   height: auto;
 }
 
-/* ---------- Secciones generales ---------- */
 section { padding: 56px 0; }
 section + section { border-top: 1px dashed var(--line); }
 
@@ -129,7 +126,6 @@ h2.section-title {
 p { margin: 0 0 14px; color: var(--ink); }
 p:last-child { margin-bottom: 0; }
 
-/* ---------- Ficha de sistema de archivos ---------- */
 .fs-card {
   --accent: var(--navy);
   --accent-bg: #fff;
@@ -220,7 +216,6 @@ p:last-child { margin-bottom: 0; }
   header.cover img { max-width: 220px; margin: 0 auto; }
 }
 
-/* ---------- Tabla comparativa ---------- */
 .table-wrap {
   overflow-x: auto;
   border: 2px solid var(--navy);
@@ -258,7 +253,6 @@ td.label {
   white-space: nowrap;
 }
 
-/* ---------- Nota / conclusión ---------- */
 .note {
   background: #fffbe9;
   border-left: 4px solid var(--fat32);
@@ -267,7 +261,6 @@ td.label {
   font-size: 14.5px;
 }
 
-/* ---------- Referencias ---------- */
 .refs {
   font-size: 13.5px;
   color: var(--ink-soft);
@@ -275,7 +268,6 @@ td.label {
 }
 .refs li { margin-bottom: 6px; }
 
-/* ---------- Footer ---------- */
 footer {
   text-align: center;
   padding: 30px 0 10px;
