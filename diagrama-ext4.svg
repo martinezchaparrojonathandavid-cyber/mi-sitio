@@ -1,0 +1,43 @@
+<svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de inodos, journal y bloques de EXT4">
+  <rect x="0" y="0" width="420" height="260" fill="#e8f6ee" rx="10"/>
+  <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1f6b40" font-weight="700">inodo → extents → bloques de datos</text>
+
+  <!-- inodo -->
+  <rect x="20" y="50" width="90" height="60" fill="#3fa66b" rx="6"/>
+  <text x="65" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#ffffff">inodo</text>
+  <text x="65" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">permisos</text>
+  <text x="65" y="102" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">dueño · fecha</text>
+
+  <!-- flecha a extent -->
+  <path d="M112 80 L150 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- extent -->
+  <rect x="152" y="55" width="110" height="50" fill="#ffffff" stroke="#3fa66b" stroke-width="1.5" rx="4"/>
+  <text x="207" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="#1f6b40">extent</text>
+  <text x="207" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#1f6b40">bloques 120–450</text>
+
+  <path d="M264 80 L302 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- bloques de datos contiguos -->
+  <g>
+    <rect x="304" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="330" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="356" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="304" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="330" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="356" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+  </g>
+
+  <defs>
+    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#1f6b40"/>
+    </marker>
+  </defs>
+
+  <!-- journal -->
+  <rect x="20" y="150" width="380" height="34" fill="#ffffff" stroke="#3fa66b" stroke-width="1.5" rx="4"/>
+  <text x="30" y="171" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#1f6b40">journal · guarda el cambio antes de aplicarlo (evita corrupción)</text>
+
+  <text x="20" y="215" font-family="Inter, sans-serif" font-size="11" fill="#1f4a30">Los extents agrupan bloques contiguos en un solo puntero,</text>
+  <text x="20" y="232" font-family="Inter, sans-serif" font-size="11" fill="#1f4a30">por eso es más eficiente que una lista cluster por cluster.</text>
+</svg>

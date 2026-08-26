@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg: #eef2f6;
+  --paper: #ffffff;
+  --ink: #1b2430;
+  --ink-soft: #4a5568;
+  --navy: #1f3a5f;
+  --line: #c7d2de;
+
+  --ntfs: #2d8fd1;
+  --ntfs-bg: #eaf4fc;
+  --fat32: #d69423;
+  --fat32-bg: #fdf3e2;
+  --ext4: #2f8f57;
+  --ext4-bg: #e8f6ee;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+a { color: var(--navy); }
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 32px 90px 70px;
+  position: relative;
+}
+
+/* espiral de cuaderno en el margen izquierdo */
+.spiral {
+  position: absolute;
+  left: 18px;
+  top: 40px;
+  bottom: 40px;
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.spiral span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid #aab8c9;
+  background: var(--bg);
+}
+
+/* ---------- Portada ---------- */
+header.cover {
+  padding: 70px 0 40px;
+  border-bottom: 3px solid var(--navy);
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 24px;
+  align-items: center;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin: 0 0 10px;
+}
+
+h1.title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: var(--navy);
+}
+
+.title mark { background: none; color: var(--ntfs); }
+
+.cover-meta {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.cover-meta strong { color: var(--ink); }
+
+header.cover img {
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Secciones generales ---------- */
+section { padding: 56px 0; }
+section + section { border-top: 1px dashed var(--line); }
+
+h2.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  color: var(--navy);
+  margin: 0 0 6px;
+}
+
+.section-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 22px;
+}
+
+p { margin: 0 0 14px; color: var(--ink); }
+p:last-child { margin-bottom: 0; }
+
+/* ---------- Ficha de sistema de archivos ---------- */
+.fs-card {
+  --accent: var(--navy);
+  --accent-bg: #fff;
+  background: var(--paper);
+  border: 2px solid var(--accent);
+  border-radius: 4px 14px 14px 4px;
+  position: relative;
+  margin-top: 34px;
+  box-shadow: 6px 6px 0 var(--accent-bg);
+}
+
+.fs-card.ntfs  { --accent: var(--ntfs);  --accent-bg: var(--ntfs-bg); }
+.fs-card.fat32 { --accent: var(--fat32); --accent-bg: var(--fat32-bg); }
+.fs-card.ext4  { --accent: var(--ext4);  --accent-bg: var(--ext4-bg); }
+
+.fs-tab {
+  position: absolute;
+  top: -18px;
+  left: 24px;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+.fs-body {
+  padding: 40px 28px 28px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 26px;
+}
+
+.fs-body h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.fs-body .year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+
+.fs-body img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tags span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+  font-size: 13.5px;
+}
+.pros-cons h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.pros-cons ul { margin: 0; padding-left: 18px; }
+.pros-cons li { margin-bottom: 4px; }
+
+@media (max-width: 720px) {
+  .fs-body { grid-template-columns: 1fr; }
+  header.cover { grid-template-columns: 1fr; }
+  header.cover img { max-width: 220px; margin: 0 auto; }
+}
+
+/* ---------- Tabla comparativa ---------- */
+.table-wrap {
+  overflow-x: auto;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: var(--paper);
+}
+
+thead th {
+  background: var(--navy);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 12.5px;
+  text-align: left;
+  padding: 12px 14px;
+}
+
+tbody td {
+  padding: 11px 14px;
+  border-top: 1px solid var(--line);
+}
+
+tbody tr:nth-child(odd) { background: #f7f9fb; }
+
+td.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---------- Nota / conclusión ---------- */
+.note {
+  background: #fffbe9;
+  border-left: 4px solid var(--fat32);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  font-size: 14.5px;
+}
+
+/* ---------- Referencias ---------- */
+.refs {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  padding-left: 18px;
+}
+.refs li { margin-bottom: 6px; }
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  padding: 30px 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}

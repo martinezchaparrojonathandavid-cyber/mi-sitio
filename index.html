@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTFS, FAT32 y EXT4 — Sistemas de archivos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg: #eef2f6;
+  --paper: #ffffff;
+  --ink: #1b2430;
+  --ink-soft: #4a5568;
+  --navy: #1f3a5f;
+  --line: #c7d2de;
+
+  --ntfs: #2d8fd1;
+  --ntfs-bg: #eaf4fc;
+  --fat32: #d69423;
+  --fat32-bg: #fdf3e2;
+  --ext4: #2f8f57;
+  --ext4-bg: #e8f6ee;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+a { color: var(--navy); }
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 32px 90px 70px;
+  position: relative;
+}
+
+/* espiral de cuaderno en el margen izquierdo */
+.spiral {
+  position: absolute;
+  left: 18px;
+  top: 40px;
+  bottom: 40px;
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.spiral span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid #aab8c9;
+  background: var(--bg);
+}
+
+/* ---------- Portada ---------- */
+header.cover {
+  padding: 70px 0 40px;
+  border-bottom: 3px solid var(--navy);
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 24px;
+  align-items: center;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin: 0 0 10px;
+}
+
+h1.title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: var(--navy);
+}
+
+.title mark { background: none; color: var(--ntfs); }
+
+.cover-meta {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.cover-meta strong { color: var(--ink); }
+
+header.cover img {
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Secciones generales ---------- */
+section { padding: 56px 0; }
+section + section { border-top: 1px dashed var(--line); }
+
+h2.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  color: var(--navy);
+  margin: 0 0 6px;
+}
+
+.section-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 22px;
+}
+
+p { margin: 0 0 14px; color: var(--ink); }
+p:last-child { margin-bottom: 0; }
+
+/* ---------- Ficha de sistema de archivos ---------- */
+.fs-card {
+  --accent: var(--navy);
+  --accent-bg: #fff;
+  background: var(--paper);
+  border: 2px solid var(--accent);
+  border-radius: 4px 14px 14px 4px;
+  position: relative;
+  margin-top: 34px;
+  box-shadow: 6px 6px 0 var(--accent-bg);
+}
+
+.fs-card.ntfs  { --accent: var(--ntfs);  --accent-bg: var(--ntfs-bg); }
+.fs-card.fat32 { --accent: var(--fat32); --accent-bg: var(--fat32-bg); }
+.fs-card.ext4  { --accent: var(--ext4);  --accent-bg: var(--ext4-bg); }
+
+.fs-tab {
+  position: absolute;
+  top: -18px;
+  left: 24px;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+.fs-body {
+  padding: 40px 28px 28px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 26px;
+}
+
+.fs-body h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.fs-body .year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+
+.fs-body img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tags span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+  font-size: 13.5px;
+}
+.pros-cons h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.pros-cons ul { margin: 0; padding-left: 18px; }
+.pros-cons li { margin-bottom: 4px; }
+
+@media (max-width: 720px) {
+  .fs-body { grid-template-columns: 1fr; }
+  header.cover { grid-template-columns: 1fr; }
+  header.cover img { max-width: 220px; margin: 0 auto; }
+}
+
+/* ---------- Tabla comparativa ---------- */
+.table-wrap {
+  overflow-x: auto;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: var(--paper);
+}
+
+thead th {
+  background: var(--navy);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 12.5px;
+  text-align: left;
+  padding: 12px 14px;
+}
+
+tbody td {
+  padding: 11px 14px;
+  border-top: 1px solid var(--line);
+}
+
+tbody tr:nth-child(odd) { background: #f7f9fb; }
+
+td.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---------- Nota / conclusión ---------- */
+.note {
+  background: #fffbe9;
+  border-left: 4px solid var(--fat32);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  font-size: 14.5px;
+}
+
+/* ---------- Referencias ---------- */
+.refs {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  padding-left: 18px;
+}
+.refs li { margin-bottom: 6px; }
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  padding: 30px 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+
+/* soporte para SVGs incrustados directamente (sin archivos externos) */
+.svg-embed,
+.svg-embed svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+header.cover .svg-embed svg { width: 100%; }
+.fs-body .svg-embed svg {
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+</style>
+</head>
+<body>
+
+<div class="spiral">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="page">
+
+  <header class="cover">
+    <div>
+      <p class="eyebrow">Introducción a Sistemas Operativos · Primer semestre</p>
+      <h1 class="title">Sistemas de archivos:<br><mark>NTFS</mark>, FAT32 y EXT4</h1>
+      <p class="cover-meta">
+        <strong>Estudiante:</strong> [Tu nombre aquí]<br>
+        <strong>Programa:</strong> Ingeniería de Sistemas<br>
+        <strong>Fecha:</strong> Agosto de 2026
+      </p>
+    </div>
+    <span class="svg-embed" role="img" aria-label="Disco duro dividido en tres particiones de colores"><svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Disco duro dividido en particiones">
+  <defs>
+    <radialGradient id="platterShine" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#2c4a72"/>
+      <stop offset="100%" stop-color="#1f3a5f"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="240" cy="240" r="200" fill="url(#platterShine)" stroke="#0f2038" stroke-width="4"/>
+
+  <!-- anillos de pistas -->
+  <circle cx="240" cy="240" r="165" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="240" cy="240" r="130" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="240" cy="240" r="95" fill="none" stroke="#3a5c85" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- 3 particiones de colores -->
+  <path d="M240 240 L240 40 A200 200 0 0 1 413.2 340 Z" fill="#2d8fd1" opacity="0.85"/>
+  <path d="M240 240 L413.2 340 A200 200 0 0 1 66.8 340 Z" fill="#e2a73e" opacity="0.85"/>
+  <path d="M240 240 L66.8 340 A200 200 0 0 1 240 40 Z" fill="#3fa66b" opacity="0.85"/>
+
+  <circle cx="240" cy="240" r="34" fill="#eef2f6" stroke="#0f2038" stroke-width="4"/>
+  <circle cx="240" cy="240" r="8" fill="#0f2038"/>
+
+  <!-- brazo lector -->
+  <rect x="236" y="20" width="8" height="90" rx="4" fill="#0f2038"/>
+  <circle cx="240" cy="20" r="10" fill="#0f2038"/>
+
+  <text x="240" y="470" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="15" fill="#1b2430">NTFS · FAT32 · EXT4</text>
+</svg></span>
+  </header>
+
+  <!-- ================= INTRODUCCIÓN ================= -->
+  <section id="intro">
+    <p class="section-sub">01 · Para entrar en tema</p>
+    <h2 class="section-title">¿Qué es un sistema de archivos?</h2>
+    <p>
+      Cuando guardamos un archivo en el computador, ese archivo no queda flotando por ahí sin más:
+      alguien tiene que llevar la cuenta de en qué parte física del disco quedó guardado, qué nombre tiene,
+      quién puede abrirlo y cuánto espacio ocupa. De eso se encarga el <strong>sistema de archivos</strong>:
+      es la forma en que el sistema operativo organiza, nombra y administra la información dentro de una
+      unidad de almacenamiento (disco duro, SSD, USB, etc).
+    </p>
+    <p>
+      En este informe corto vamos a ver tres de los sistemas de archivos más usados: <strong>NTFS</strong>
+      (el que usa Windows), <strong>FAT32</strong> (el más viejo y compatible) y <strong>EXT4</strong>
+      (el que usan la mayoría de distribuciones de Linux).
+    </p>
+  </section>
+
+  <!-- ================= NTFS ================= -->
+  <section id="ntfs">
+    <p class="section-sub">02 · Ficha técnica</p>
+    <h2 class="section-title">Los tres sistemas de archivos</h2>
+
+    <article class="fs-card ntfs">
+      <span class="fs-tab">NTFS</span>
+      <div class="fs-body">
+        <div>
+          <h3>New Technology File System</h3>
+          <p class="year">Microsoft · desde 1993</p>
+          <p>
+            Es el sistema de archivos por defecto de Windows desde hace más de 20 años. Guarda toda la
+            información de cada archivo (nombre, permisos, fechas, ubicación) en una gran tabla llamada
+            <strong>MFT (Master File Table)</strong>. Cada archivo del disco tiene una fila en esa tabla.
+          </p>
+          <p>
+            Su punto fuerte es la seguridad: permite definir permisos por usuario, cifrar archivos y
+            carpetas, y comprimir datos automáticamente. Además usa <em>journaling</em>, que es básicamente
+            un registro de lo que se está haciendo, para poder recuperarse si el computador se apaga de
+            golpe.
+          </p>
+          <div class="tags">
+            <span>permisos por usuario</span>
+            <span>journaling</span>
+            <span>archivos hasta 16 TB</span>
+          </div>
+        </div>
+        <div>
+          <span class="svg-embed" role="img" aria-label="Diagrama de la Master File Table de NTFS mostrando registros de archivos y el journal"><svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de la Master File Table de NTFS">
+  <rect x="0" y="0" width="420" height="260" fill="#eaf4fc" rx="10"/>
+
+  <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#12496f" font-weight="700">$MFT — Master File Table</text>
+
+  <!-- registros de la MFT -->
+  <g font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#12496f">
+    <rect x="20" y="45" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="62">registro 0 · $MFT</text>
+
+    <rect x="20" y="75" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="92">registro 1 · informe.docx</text>
+
+    <rect x="20" y="105" width="380" height="26" fill="#2d8fd1" stroke="#12496f" stroke-width="1.5" rx="4"/>
+    <text x="30" y="122" fill="#ffffff">registro 2 · fotos.jpg  →  atributos + permisos ACL</text>
+
+    <rect x="20" y="135" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="152">registro 3 · tarea.pdf</text>
+  </g>
+
+  <!-- journal -->
+  <rect x="20" y="175" width="380" height="34" fill="#fff3e0" stroke="#e2a73e" stroke-width="1.5" rx="4"/>
+  <text x="30" y="196" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#8a5b12">$LogFile · registro de transacciones (journaling)</text>
+
+  <text x="20" y="235" font-family="Inter, sans-serif" font-size="11" fill="#33475b">Cada archivo es una fila en una gran tabla con sus atributos.</text>
+</svg></span>
+          <div class="pros-cons">
+            <div>
+              <h4>A favor</h4>
+              <ul>
+                <li>Seguridad y permisos</li>
+                <li>Resistente a fallos</li>
+                <li>Soporta archivos gigantes</li>
+              </ul>
+            </div>
+            <div>
+              <h4>En contra</h4>
+              <ul>
+                <li>Poco compatible fuera de Windows</li>
+                <li>Más "pesado" para USB pequeñas</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================= FAT32 ================= -->
+    <article class="fs-card fat32">
+      <span class="fs-tab">FAT32</span>
+      <div class="fs-body">
+        <div>
+          <h3>File Allocation Table 32-bit</h3>
+          <p class="year">Microsoft · desde 1996</p>
+          <p>
+            Es el "abuelo" de esta lista, pero sigue vivo porque casi cualquier dispositivo lo reconoce:
+            cámaras, consolas, televisores, memorias USB. Funciona con una tabla (la FAT) que funciona
+            como una lista enlazada: cada casilla dice en qué otra casilla continúa el archivo, hasta
+            llegar al final.
+          </p>
+          <p>
+            Es simple y muy compatible, pero le pesan los años: <strong>no soporta archivos de más de 4 GB</strong>
+            y no maneja permisos de usuario ni journaling, así que un corte de luz puede dejar el disco en
+            mal estado.
+          </p>
+          <div class="tags">
+            <span>máxima compatibilidad</span>
+            <span>sin journaling</span>
+            <span>archivo máx. 4 GB</span>
+          </div>
+        </div>
+        <div>
+          <span class="svg-embed" role="img" aria-label="Diagrama de la tabla FAT mostrando clusters enlazados en el disco"><svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de la tabla de asignacion de archivos FAT32">
+  <rect x="0" y="0" width="420" height="260" fill="#fdf3e2" rx="10"/>
+  <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#8a5b12" font-weight="700">Tabla FAT — lista enlazada de clusters</text>
+
+  <!-- fila de la tabla FAT -->
+  <g font-family="'JetBrains Mono', monospace" font-size="10">
+    <rect x="20" y="45" width="60" height="24" fill="#ffffff" stroke="#e2a73e" stroke-width="1.5"/>
+    <text x="30" y="61" fill="#8a5b12">[5] → 6</text>
+    <rect x="80" y="45" width="60" height="24" fill="#ffffff" stroke="#e2a73e" stroke-width="1.5"/>
+    <text x="90" y="61" fill="#8a5b12">[6] → 9</text>
+    <rect x="140" y="45" width="60" height="24" fill="#ffffff" stroke="#e2a73e" stroke-width="1.5"/>
+    <text x="150" y="61" fill="#8a5b12">[9] → EOF</text>
+  </g>
+
+  <!-- clusters en el disco -->
+  <text x="20" y="100" font-family="Inter, sans-serif" font-size="11" fill="#5c3f0a">Clusters en el disco (video.mp4 ocupa 5 → 6 → 9):</text>
+
+  <g>
+    <rect x="20" y="115" width="42" height="42" fill="#f5deb0" stroke="#8a5b12" stroke-width="1"/>
+    <text x="41" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11">3</text>
+
+    <rect x="66" y="115" width="42" height="42" fill="#f5deb0" stroke="#8a5b12" stroke-width="1"/>
+    <text x="87" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11">4</text>
+
+    <rect x="112" y="115" width="42" height="42" fill="#e2a73e" stroke="#8a5b12" stroke-width="2"/>
+    <text x="133" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#3a2600">5</text>
+
+    <rect x="158" y="115" width="42" height="42" fill="#e2a73e" stroke="#8a5b12" stroke-width="2"/>
+    <text x="179" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#3a2600">6</text>
+
+    <rect x="204" y="115" width="42" height="42" fill="#f5deb0" stroke="#8a5b12" stroke-width="1"/>
+    <text x="225" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11">7</text>
+
+    <rect x="250" y="115" width="42" height="42" fill="#f5deb0" stroke="#8a5b12" stroke-width="1"/>
+    <text x="271" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11">8</text>
+
+    <rect x="296" y="115" width="42" height="42" fill="#e2a73e" stroke="#8a5b12" stroke-width="2"/>
+    <text x="317" y="140" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#3a2600">9</text>
+
+    <path d="M133 108 Q145 95 179 108" fill="none" stroke="#8a5b12" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <path d="M179 108 Q235 90 317 108" fill="none" stroke="#8a5b12" stroke-width="1.5" marker-end="url(#arrow)"/>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#8a5b12"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="200" font-family="Inter, sans-serif" font-size="11" fill="#5c3f0a">Sin metadatos de permisos: no diferencia usuarios.</text>
+  <text x="20" y="220" font-family="Inter, sans-serif" font-size="11" fill="#5c3f0a">Límite de 4 GB por archivo.</text>
+</svg></span>
+          <div class="pros-cons">
+            <div>
+              <h4>A favor</h4>
+              <ul>
+                <li>Compatible con casi todo</li>
+                <li>Estructura simple y liviana</li>
+              </ul>
+            </div>
+            <div>
+              <h4>En contra</h4>
+              <ul>
+                <li>Límite de 4 GB por archivo</li>
+                <li>Sin permisos ni seguridad</li>
+                <li>Vulnerable ante apagones</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ================= EXT4 ================= -->
+    <article class="fs-card ext4">
+      <span class="fs-tab">EXT4</span>
+      <div class="fs-body">
+        <div>
+          <h3>Fourth Extended Filesystem</h3>
+          <p class="year">Comunidad Linux · desde 2008</p>
+          <p>
+            Es la cuarta versión de la familia "extended" y el sistema de archivos por defecto en la
+            mayoría de distribuciones de Linux (Ubuntu, Debian, etc). Cada archivo tiene un
+            <strong>inodo</strong>, una especie de ficha con sus datos (dueño, permisos, fecha), que apunta
+            a los bloques donde está guardado el contenido real.
+          </p>
+          <p>
+            A diferencia de FAT32, sí tiene journaling, y usa un truco llamado <em>extents</em> que agrupa
+            bloques contiguos en un solo puntero en vez de anotarlos uno por uno, lo que lo hace más rápido
+            con archivos grandes.
+          </p>
+          <div class="tags">
+            <span>inodos</span>
+            <span>journaling</span>
+            <span>archivos hasta 16 TB</span>
+          </div>
+        </div>
+        <div>
+          <span class="svg-embed" role="img" aria-label="Diagrama de inodo, extents y bloques de datos en EXT4"><svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de inodos, journal y bloques de EXT4">
+  <rect x="0" y="0" width="420" height="260" fill="#e8f6ee" rx="10"/>
+  <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1f6b40" font-weight="700">inodo → extents → bloques de datos</text>
+
+  <!-- inodo -->
+  <rect x="20" y="50" width="90" height="60" fill="#3fa66b" rx="6"/>
+  <text x="65" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#ffffff">inodo</text>
+  <text x="65" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">permisos</text>
+  <text x="65" y="102" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#e8f6ee">dueño · fecha</text>
+
+  <!-- flecha a extent -->
+  <path d="M112 80 L150 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- extent -->
+  <rect x="152" y="55" width="110" height="50" fill="#ffffff" stroke="#3fa66b" stroke-width="1.5" rx="4"/>
+  <text x="207" y="75" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="#1f6b40">extent</text>
+  <text x="207" y="90" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#1f6b40">bloques 120–450</text>
+
+  <path d="M264 80 L302 80" stroke="#1f6b40" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- bloques de datos contiguos -->
+  <g>
+    <rect x="304" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="330" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="356" y="60" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="304" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="330" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+    <rect x="356" y="86" width="24" height="24" fill="#a9dcc0" stroke="#1f6b40"/>
+  </g>
+
+  <defs>
+    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#1f6b40"/>
+    </marker>
+  </defs>
+
+  <!-- journal -->
+  <rect x="20" y="150" width="380" height="34" fill="#ffffff" stroke="#3fa66b" stroke-width="1.5" rx="4"/>
+  <text x="30" y="171" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#1f6b40">journal · guarda el cambio antes de aplicarlo (evita corrupción)</text>
+
+  <text x="20" y="215" font-family="Inter, sans-serif" font-size="11" fill="#1f4a30">Los extents agrupan bloques contiguos en un solo puntero,</text>
+  <text x="20" y="232" font-family="Inter, sans-serif" font-size="11" fill="#1f4a30">por eso es más eficiente que una lista cluster por cluster.</text>
+</svg></span>
+          <div class="pros-cons">
+            <div>
+              <h4>A favor</h4>
+              <ul>
+                <li>Rápido y estable</li>
+                <li>Resistente a fallos</li>
+                <li>Gratis y de código abierto</li>
+              </ul>
+            </div>
+            <div>
+              <h4>En contra</h4>
+              <ul>
+                <li>Windows no lo lee de forma nativa</li>
+                <li>Menos común fuera de Linux</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= COMPARATIVA ================= -->
+  <section id="comparativa">
+    <p class="section-sub">03 · En resumen</p>
+    <h2 class="section-title">Tabla comparativa</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>NTFS</th>
+            <th>FAT32</th>
+            <th>EXT4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label">Sistema operativo típico</td>
+            <td>Windows</td>
+            <td>Cualquiera (USB, cámaras)</td>
+            <td>Linux</td>
+          </tr>
+          <tr>
+            <td class="label">Tamaño máx. de archivo</td>
+            <td>~16 TB</td>
+            <td>4 GB</td>
+            <td>~16 TB</td>
+          </tr>
+          <tr>
+            <td class="label">Journaling</td>
+            <td>Sí</td>
+            <td>No</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td class="label">Permisos de usuario</td>
+            <td>Sí (ACL)</td>
+            <td>No</td>
+            <td>Sí (estilo Unix)</td>
+          </tr>
+          <tr>
+            <td class="label">Compatibilidad</td>
+            <td>Media</td>
+            <td>Muy alta</td>
+            <td>Baja fuera de Linux</td>
+          </tr>
+          <tr>
+            <td class="label">Ideal para</td>
+            <td>Disco interno de Windows</td>
+            <td>USB / tarjetas SD</td>
+            <td>Disco interno de Linux</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= CONCLUSIÓN ================= -->
+  <section id="conclusion">
+    <p class="section-sub">04 · Para cerrar</p>
+    <h2 class="section-title">Conclusión</h2>
+    <p>
+      Ningún sistema de archivos es "el mejor" en general: cada uno se diseñó pensando en un problema
+      distinto. FAT32 prioriza la compatibilidad y por eso sigue siendo el estándar de las memorias USB;
+      NTFS prioriza la seguridad y el control, por lo que tiene sentido en un computador de escritorio con
+      varios usuarios; y EXT4 prioriza la velocidad y la estabilidad dentro del ecosistema Linux.
+    </p>
+    <div class="note">
+      Algo que me pareció interesante estudiando este tema: la diferencia real entre estos sistemas no es
+      solo "qué tan viejos son", sino <strong>qué problema estaban resolviendo</strong> en el momento en que
+      se crearon (compatibilidad, seguridad o velocidad).
+    </div>
+  </section>
+
+  <!-- ================= REFERENCIAS ================= -->
+  <section id="referencias">
+    <p class="section-sub">05 · Fuentes de consulta</p>
+    <h2 class="section-title">Referencias</h2>
+    <ul class="refs">
+      <li>Documentación oficial de Microsoft sobre NTFS y FAT32 (learn.microsoft.com)</li>
+      <li>Documentación del kernel de Linux sobre EXT4 (kernel.org)</li>
+      <li>Apuntes de clase — Introducción a Sistemas Operativos</li>
+    </ul>
+  </section>
+
+  <footer>
+    Trabajo elaborado para la asignatura de Introducción a Sistemas Operativos · Primer semestre
+  </footer>
+
+</div>
+</body>
+</html>

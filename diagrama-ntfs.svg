@@ -1,0 +1,26 @@
+<svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de la Master File Table de NTFS">
+  <rect x="0" y="0" width="420" height="260" fill="#eaf4fc" rx="10"/>
+
+  <text x="20" y="30" font-family="'JetBrains Mono', monospace" font-size="13" fill="#12496f" font-weight="700">$MFT — Master File Table</text>
+
+  <!-- registros de la MFT -->
+  <g font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#12496f">
+    <rect x="20" y="45" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="62">registro 0 · $MFT</text>
+
+    <rect x="20" y="75" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="92">registro 1 · informe.docx</text>
+
+    <rect x="20" y="105" width="380" height="26" fill="#2d8fd1" stroke="#12496f" stroke-width="1.5" rx="4"/>
+    <text x="30" y="122" fill="#ffffff">registro 2 · fotos.jpg  →  atributos + permisos ACL</text>
+
+    <rect x="20" y="135" width="380" height="26" fill="#ffffff" stroke="#2d8fd1" stroke-width="1.5" rx="4"/>
+    <text x="30" y="152">registro 3 · tarea.pdf</text>
+  </g>
+
+  <!-- journal -->
+  <rect x="20" y="175" width="380" height="34" fill="#fff3e0" stroke="#e2a73e" stroke-width="1.5" rx="4"/>
+  <text x="30" y="196" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#8a5b12">$LogFile · registro de transacciones (journaling)</text>
+
+  <text x="20" y="235" font-family="Inter, sans-serif" font-size="11" fill="#33475b">Cada archivo es una fila en una gran tabla con sus atributos.</text>
+</svg>
